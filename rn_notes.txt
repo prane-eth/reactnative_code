@@ -405,13 +405,11 @@ AsyncStorage
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>
-        {name ? `Hello ${name}!` : 'Please type your name'}
-      </Text>
       <TextInput
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
         onChangeText={text => setNameInStorage(text)}
         value={name}
       />
+      <Text> {name} </Text>
     </View>
   );
