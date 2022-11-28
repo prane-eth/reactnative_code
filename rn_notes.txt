@@ -137,17 +137,20 @@ fetch method
 Button
       similar to button. can have onPress
 ... import { ..., Button } from 'react-native';
+  const handlePress = () => false;
   return (
     <View ...>
       <Button
         title="Click Here"
         onPress={() => alert('Button Clicked!')}
+        -- or --
+        onPress={handlePress}
       />
     </View>
   );
 
 TouchableOpacity
-      similar to button
+      similar to button. changes opacity while pressed or holded
 ... import { ..., TouchableOpacity } from 'react-native';
   return (
     <View style={styles.container}>
@@ -156,4 +159,63 @@ TouchableOpacity
       </TouchableOpacity>
     </View>
   );
+
+TouchableHighlight
+      similar to button. changes background color to black while pressed or holded
+... import { ..., TouchableHighlight } from 'react-native';
+  return (
+    <View style={styles.container}>
+      <TouchableHighlight onPress={() => setMyVar('Hello World 3')}>
+        <Text>{myVar}</Text>
+      </TouchableHighlight>
+    </View>
+  );
+
+TouchableNativeFeedback
+      simulates ink aniation when pressed
+... import { ..., TouchableNativeFeedback } from 'react-native';
+  return (
+    <View style={styles.container}>
+      <TouchableNativeFeedback onPress={() => setMyVar('Hello World 3')}>
+        <Text>{myVar}</Text>
+      </TouchableNativeFeedback>
+    </View>
+  );
+
+TouchableWithoutFeedback
+      used to handle touch events without any animation. usually not used much
+
+Animated
+      used to create animations
+... import { ..., Animated } from 'react-native';
+  useEffect(() => {
+    this.animatedWidth = new Animated.Value(50);
+    this.animatedHeight = new Animated.Value(50);
+  }, []);
+  const animatedBox = () => {
+    Animated.timing(this.animatedWidth, {
+      toValue: 200,
+      duration: 1000
+    }).start();
+    Animated.timing(this.animatedHeight, {
+      toValue: 500,
+      duration: 500,
+    }).start();
+  };
+  const animatedStyle = {
+    width: this.animatedWidth,
+    height: this.animatedHeight
+  };
+  return (
+    <TouchableOpacity style={styles.container} onPress={animatedBox}>
+      <Animated.View style={[styles.box, animatedStyle]} />
+    </TouchableOpacity>
+  );
+
+adding multiple styles
+    const newStyle = {
+      width: ...
+    }
+    ...
+      <Animated.View style={[styles.box, animatedStyle]} />
 

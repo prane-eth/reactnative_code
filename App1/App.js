@@ -1,21 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 
 export default function App() {
-  const [myVar, setMyVar] = useState('Hello World');
-  useEffect(() => {
-    setMyVar('Hello World 2');
-  }, []);
+  const [myVar, setMyVar] = useState(1);
   const buttonClick = () => {
-    setMyVar('Hello World 3');
+    setMyVar(2);
     alert(myVar);
   };
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={buttonClick}>
-        <Text>{myVar}</Text>
-      </TouchableOpacity>
+      <TouchableNativeFeedback onPress={buttonClick} style={styles.button}>
+        <Text> Value: {myVar} </Text>
+      </TouchableNativeFeedback>
     </View>
   );
 }
@@ -26,5 +22,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: 'red',
   },
 });
