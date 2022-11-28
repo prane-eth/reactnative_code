@@ -1,0 +1,52 @@
+Creating project:
+npm i -g create-react-native-app
+create-react-native-app App1
+cd App1
+if web is required:
+    npx expo install react-native-web@~0.18.9 react-dom@18.1.0 @expo/webpack-config@^0.17.2
+npm start  (or)  yarn web
+
+Initial code:
+
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text> test </Text>
+    </View>
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+
+using state
+  const state = {
+    myVar: 'Hello World'
+  }
+  return (
+    <View style={styles.container}>
+      <Text> {state.myVar} </Text>
+    </View>
+  );
+--- or ---
+  import React, { useState, useEffect } from 'react';
+  const [myVar, setMyVar] = useState('Hello World');
+  useEffect(() => {
+    setMyVar('Hello World 2');
+  }, []);
+  return (
+    <View style={styles.container}>
+      <Text> {myVar} </Text>
+    </View>
+  );
+
+
