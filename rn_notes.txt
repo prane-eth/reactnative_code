@@ -1,5 +1,5 @@
 Creating project:
-npm i -g create-react-native-app
+npm i -g create-react-native-app react-native-router-flux
 create-react-native-app App1
 cd App1
 if web is required:
@@ -216,6 +216,202 @@ adding multiple styles
     const newStyle = {
       width: ...
     }
-    ...
-      <Animated.View style={[styles.box, animatedStyle]} />
+    ... <Animated.View style={[styles.box, animatedStyle]} />
 
+
+
+Routing
+      similar to react router
+  $ npm i react-native-router-flux
+  ... import { ..., Router, Scene } from 'react-native-router-flux';
+  const Routes = () => (
+    <Router>
+      <Scene key="root">
+        <Scene key="home" component={Home} title="Home" initial={true} />
+        <Scene key="about" component={About} title="About" />
+      </Scene>
+    </Router>
+  );
+
+Webview
+      similar to iframe
+... import { ..., WebView } from 'react-native-webview';
+  return (
+    <WebView
+      source={{ uri: 'https://reactnative.dev/' }}
+      style={{ marginTop: 20 }}
+    />
+  );
+
+Modal
+... import { ..., Modal } from 'react-native';
+  const [modalVisible, setModalVisible] = useState(false);
+  return (
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
+
+      <TouchableHighlight
+        style={styles.openButton}
+        onPress={() => {
+          setModalVisible(true);
+        }}
+      >
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </TouchableHighlight>
+    </View>
+  );
+
+ActivityIndicator
+      similar to spinner. displays loading animation
+    const [animating, setAnimating] = useState(true);
+    var closeActivityIndicatior = () => {
+      setTimeout(() => {
+        setAnimating(false);
+      }, 5000);
+    };
+    useEffect(() => {
+      closeActivityIndicator();
+    }, []);
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator
+          animating={animating}
+          color="#bc2b78"
+          size="large"
+          style={styles.activityIndicator}
+        />
+      </View>
+    );
+
+Picker
+      similar to select
+... import { ..., Picker } from 'react-native';
+  const [selectedValue, setSelectedValue] = useState("java");
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Picker
+        selectedValue={selectedValue}
+        style={{ height: 50, width: 100 }}
+        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+      >
+        <Picker.Item label="Java" value="java" />
+        <Picker.Item label="JavaScript" value="js" />
+      </Picker>
+    </View>
+  );
+
+StatusBar
+... import { ..., StatusBar } from 'react-native';
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        barStyle="dark-content"
+        hidden={false}
+        backgroundColor="#00BCD4"
+        translucent={true}
+        networkActivityIndicatorVisible={true}
+      />
+      <Text>Hello World!</Text>
+    </View>
+  );
+
+Switch
+    similar to checkbox of html, toggle switch of android
+... import { ..., Switch } from 'react-native';
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Switch
+        trackColor={{ false: "#767577", true: "#81b0ff" }}
+        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleSwitch}
+        value={isEnabled}
+      />
+    </View>
+  );
+
+
+
+Geolocation
+      similar to navigator.geolocation
+  const [initialPosition, setInitialPosition] = useState('unknown');
+  const [lastPosition, setLastPosition] = useState('unknown');
+  var watchID = null;
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        setInitialPosition(initialPosition);
+      },
+      (error) => alert(JSON.stringify(error)),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      var lastPosition = JSON.stringify(position);
+      setLastPosition(lastPosition);
+    });
+    return () => {
+      navigator.geolocation.clearWatch(this.watchID);
+    };
+  }, []);
+  return (
+    <View style={styles.container}>
+      <Text style={styles.welcome}>
+        Initial position: {initialPosition}
+      </Text>
+      <Text style={styles.welcome}>
+        Current position: {lastPosition}
+      </Text>
+    </View>
+  );
+
+AsyncStorage
+      similar to localStorage
+... import { ..., AsyncStorage } from 'react-native';
+  const [name, setNameInState] = useState('');
+  useEffect(() => {
+    AsyncStorage.getItem('name').then((value) => {
+      setNameInState(value);
+    });
+  }, []);
+  const setNameInStorage = (value) => {
+    AsyncStorage.setItem('name', value);
+    setNameInState(value);
+  };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.welcome}>
+        {name ? `Hello ${name}!` : 'Please type your name'}
+      </Text>
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        onChangeText={text => setNameInStorage(text)}
+        value={name}
+      />
+    </View>
+  );

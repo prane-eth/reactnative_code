@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
 export default function App() {
   const [myVar, setMyVar] = useState(1);
@@ -7,13 +7,33 @@ export default function App() {
     setMyVar(2);
     alert(myVar);
   };
+  const [animating, setAnimating] = useState(true);
+  var closeActivityIndicator = () => {
+    setTimeout(() => {
+      setAnimating(false);
+    }, 5000);
+  };
+  useEffect(() => {
+    closeActivityIndicator();
+  }, []);
+  
   return (
     <View style={styles.container}>
-      <TouchableNativeFeedback onPress={buttonClick} style={styles.button}>
-        <Text> Value: {myVar} </Text>
-      </TouchableNativeFeedback>
+      <ActivityIndicator
+        animating={animating}
+        color="#bc2b78"
+        size="large"
+        style={styles.activityIndicator}
+      />
     </View>
   );
+  // return (
+  //   <View style={styles.container}>
+  //     <TouchableNativeFeedback onPress={buttonClick} style={styles.button}>
+  //       <Text> Value: {myVar} </Text>
+  //     </TouchableNativeFeedback>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({
