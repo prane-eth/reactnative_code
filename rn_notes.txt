@@ -38,7 +38,7 @@ using state
     </View>
   );
 --- or ---
-  import React, { useState, useEffect } from 'react';
+.... import React, { useState, useEffect } from 'react';
   const [myVar, setMyVar] = useState('Hello World');
   useEffect(() => {
     setMyVar('Hello World 2');
@@ -49,4 +49,111 @@ using state
     </View>
   );
 
+onPress
+      similar to onClick to any div
+  <Text onPress={() => setMyVar('Hello World 3')}> {myVar} </Text>
+  -- or --
+  const buttonClick = () => {
+    setMyVar('Hello World 3');
+    alert("button clicked");
+  };
+  <Text onPress={buttonClick}> {myVar} </Text>
+
+TextInput
+      similar to input
+... import { ..., TextInput } from 'react-native';
+  const [myVar, setMyVar] = useState('');
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        
+        underlineColorAndroid="transparent"       ----> android properties
+        placeholder="Enter text here"
+        placeholderTextColor="#9a73ef"
+        autoCapitalize="none"
+        
+        onChangeText={text => setMyVar(text)}
+        value={myVar}
+      />
+      <TouchableOpacity onPress={() => setMyVar('')}>
+        <Text>Clear</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => alert(myVar)}>
+        <Text>Submit</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+
+ScrollView
+      similar to div with overflow: scroll
+... import { ..., ScrollView } from 'react-native';
+  const names = {
+    {id: 1, name: 'John'},
+    ....
+  }
+  return (
+    <View ...>
+      <ScrollView>
+        {names.map((item, index) => {
+          return (
+            <View key={item.id} style={...}>
+              <Text>{item.name}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+
+Adding images
+      similar to img
+... import { ..., Image } from 'react-native';
+  return (
+    <View ...>
+      <Image
+        style={...}
+        source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+        -- or --
+        source={require('./assets/icon.png')}
+      />
+    </View>
+  );
+
+
+fetch method
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(responseJson => {
+        setUsersValue(responseJson);
+      })
+      .catch(error => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
+
+
+Button
+      similar to button. can have onPress
+... import { ..., Button } from 'react-native';
+  return (
+    <View ...>
+      <Button
+        title="Click Here"
+        onPress={() => alert('Button Clicked!')}
+      />
+    </View>
+  );
+
+TouchableOpacity
+      similar to button
+... import { ..., TouchableOpacity } from 'react-native';
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setMyVar('Hello World 3')}>
+        <Text>{myVar}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
