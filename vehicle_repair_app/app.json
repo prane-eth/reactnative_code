@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "vehicle_repair_app",
+    "slug": "vehicle_repair_app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "vehicle_repair_app"
+}
