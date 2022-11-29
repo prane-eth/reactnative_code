@@ -1,7 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import ensureDeviceID, { deviceID } from './EnsureDeviceID';
+import ensureDeviceID, { deviceID, ensureLocationEnabled } from './EnsureDeviceID';
+import WS from 'react-native-websocket'
+// https://www.npmjs.com/package/react-native-websocket
 
 export default function App() {
   const [locationEnabled, setLocationEnabled] = useState(false);
@@ -22,6 +24,7 @@ export default function App() {
   };
   useEffect(() => {
     ensureDeviceID();
+    ensureLocationEnabled();
   }, []);
   return (
     <View style={styles.container}>

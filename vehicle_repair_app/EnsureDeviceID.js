@@ -1,8 +1,10 @@
-import { AsyncStorage } from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from "react-native-device-info";
 import md5 from "md5";
+import { Platform } from "react-native";
 
 export var deviceID = null;
+
 const getHash = (value) => {
     return md5(value);
 };
@@ -18,10 +20,12 @@ const ensureDeviceID = async () => {
     var id = await DeviceInfo.getUniqueId();
     if (!id || id === "unknown") {
         // ip address + user agent + timestamp
-        const ip = await DeviceInfo.getIpAddress();
+        const ipAddress = await DeviceInfo.getIpAddress();
         const userAgent = await DeviceInfo.getUserAgent();
+        const os = Platform.OS;
+        const batteryLevel = await DeviceInfo.getBatteryLevel();
         const timestamp = Date.now();
-        id = ip + userAgent + timestamp;
+        id = ipAddress + userAgent + os + batteryLevel + timestamp;
     }
     // hashing is for a unique value of constant length
     deviceID = getHash(id);
@@ -30,7 +34,13 @@ const ensureDeviceID = async () => {
 };
 
 export const ensureLocationEnabled = async () => {
+    if (Platform.OS === "ios" || Platform.OS === "android") {
+    }
     const locationEnabled = await DeviceInfo.isLocationEnabled();
+    if (!locationEnabled) {
+        var res = await DeviceInfo.getAvailableLocationProviders();
+        console.log(res);
+    }
     return locationEnabled;
 };
 
