@@ -1,10 +1,11 @@
 Creating project:
-npm i -g create-react-native-app react-native-router-flux
+npm i -g create-react-native-app react-native-router-flux expo
 create-react-native-app App1
 cd App1
 if web is required:
     npx expo install react-native-web@~0.18.9 react-dom@18.1.0 @expo/webpack-config@^0.17.2
 npm start  (or)  yarn web
+
 
 Initial code:
 
@@ -392,7 +393,7 @@ Geolocation
 
 AsyncStorage
       similar to localStorage
-... import { ..., AsyncStorage } from 'react-native';
+import { AsyncStorage } from '@react-native-community/async-storage';
   const [name, setNameInState] = useState('');
   useEffect(() => {
     AsyncStorage.getItem('name').then((value) => {
