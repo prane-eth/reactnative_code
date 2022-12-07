@@ -1,7 +1,9 @@
+import { useState } from "react";
+import { Platform } from "react-native";
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from "react-native-device-info";
 import md5 from "md5";
-import { Platform } from "react-native";
 
 export var deviceID = null;
 
@@ -9,7 +11,7 @@ const getHash = (value) => {
     return md5(value);
 };
 
-const ensureDeviceID = async () => {
+export const ensureDeviceID = async () => {
     if (!deviceID) {
         deviceID = await AsyncStorage.getItem("deviceID");
     }
@@ -43,5 +45,3 @@ export const ensureLocationEnabled = async () => {
     }
     return locationEnabled;
 };
-
-export default ensureDeviceID;

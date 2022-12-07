@@ -1,60 +1,30 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import ensureDeviceID, {
-    deviceID,
-    ensureLocationEnabled,
-} from "./EnsureDeviceID";
 import WebSocket from "react-native-websocket";
 
+import {
+    ensureDeviceID,
+    deviceID,
+    ensureLocationEnabled,
+    locationEnabled,
+    setLocationEnabled,
+    locationTest,
+    setLocation,
+} from "./CustomFunctions/DeviceFunctions";
+import {
+    serverStatus,
+    requestingHelp,
+    setRequestingHelp,
+    readyToHelp,
+    setReadyToHelp,
+    requestHelp,
+    startHelping,
+    connectServer,
+    reconnectServer,
+} from "./CustomFunctions/MyWebsocket";
+
 export default function App() {
-    const [locationEnabled, setLocationEnabled] = useState(false);
-    const [location, setLocation] = useState(null);
-    const [serverConnected, setServerConnected] = useState(false);
-    const [requestingHelp, setRequestingHelp] = useState(false);
-    const [readyToHelp, setReadyToHelp] = useState(false);
-    var ws;
-
-    const requestHelp = () => {
-        if (requestingHelp) {
-            // deviceID
-        } else {
-        }
-        setRequestingHelp(!requestingHelp);
-    };
-    const startHelping = () => {
-        if (readyToHelp) {
-        } else {
-        }
-        setReadyToHelp(!readyToHelp);
-    };
-    const disconnectServer = () => {
-        ws.close();
-        setServerConnected(false);
-    };
-    const connectServer = () => {
-        ws = new WebSocket("ws://localhost:8080");
-        ws.onopen = () => {
-            setServerConnected(true);
-            ws.send("Hello!");
-        };
-        ws.onmessage = (e) => {
-            console.log("ws.onmessage: ", e.data);
-        };
-        ws.onerror = (e) => {
-            // an error occurred
-            console.log(e.message);
-        };
-        ws.onclose = (e) => {
-            setServerConnected(false);
-            console.log("ws.onclose: ", e.code, e.reason);
-        };
-    };
-    const reconnectServer = () => {
-        disconnectServer();
-        connectServer();
-    };
-
     useEffect(() => {
         ensureDeviceID();
         ensureLocationEnabled();
@@ -63,11 +33,9 @@ export default function App() {
     return (
         <View style={styles.container}>
             <StatusBar style="auto" />
-            <Text onPress={reconnectServer}>
-                {serverConnected
-                    ? "Connected to server"
-                    : "Not connected to server"}
-            </Text>
+            {/* circle filled with color depending on server status */}
+            <div style={serverStatus == "Connected to server" ? "green" : "red"}></div>
+            <Text onPress={reconnectServer}> serverStatus </Text>
             {requestingHelp ? (
                 <TouchableOpacity
                     style={[styles.button, styles.redButton]}
@@ -111,5 +79,17 @@ const styles = StyleSheet.create({
     },
     redButton: {
         backgroundColor: "red",
+    },
+    redCircle: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        backgroundColor: "red",
+    },
+    greenCircle: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        backgroundColor: "green",
     },
 });
