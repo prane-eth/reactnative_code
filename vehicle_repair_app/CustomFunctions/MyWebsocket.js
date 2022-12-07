@@ -1,4 +1,5 @@
 import { useState } from "react";
+import WebSocket from "react-native-websocket";
 
 export const [serverStatus, setServerStatus] = useState(false);
 export const [requestingHelp, setRequestingHelp] = useState(false);
@@ -11,15 +12,15 @@ export const connectServer = () => {
         setServerStatus("Connected to server");
         ws.send("Hello!");
     };
-    ws.onmessage = (e) => {
-        console.log("ws.onmessage: ", e.data);
+    ws.onmessage = (err) => {
+        console.log("ws.onmessage: ", err.data);
     };
-    ws.onerror = (e) => {
-        console.log("ws.onerror: ", e.message);
+    ws.onerror = (err) => {
+        console.log("ws.onerror: ", err.message);
     };
-    ws.onclose = (e) => {
+    ws.onclose = (err) => {
         setServerStatus("Not connected to server");
-        console.log("ws.onclose: ", e.code, e.reason);
+        console.log("ws.onclose: ", err.code, err.reason);
     };
 };
 export const reconnectServer = () => {
@@ -29,7 +30,7 @@ export const reconnectServer = () => {
 
 export const requestHelp = () => {
     if (requestingHelp) {
-        // deviceID
+        ws.send("cancelHelp", deviceID);
     } else {
         ws.send("requestHelp", deviceID);
     }
@@ -37,7 +38,9 @@ export const requestHelp = () => {
 };
 export const startHelping = () => {
     if (readyToHelp) {
+        ws.send("stopHelping", deviceID);
     } else {
+        ws.send("startHelping", deviceID);
     }
     setReadyToHelp(!readyToHelp);
 };
