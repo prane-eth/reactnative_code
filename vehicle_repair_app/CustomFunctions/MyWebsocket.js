@@ -2,21 +2,13 @@ import { useState } from "react"
 import WebSocket from "react-native-websocket"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-var serverStatus,
-	setServerStatus,
-	requestingHelp,
-	setRequestingHelp,
-	readyToHelp,
-	setReadyToHelp,
+var serverStatus, setServerStatus, requestingHelp, 
+    setRequestingHelp, readyToHelp, setReadyToHelp,
     ws
 
 export const initWebSocket = (
-	serverStatusState,
-	setServerStatusState,
-	requestingHelpState,
-	setRequestingHelpState,
-	readyToHelpState,
-	setReadyToHelpState
+	serverStatusState, setServerStatusState, requestingHelpState,
+	setRequestingHelpState, readyToHelpState, setReadyToHelpState
 ) => {
 	serverStatus = serverStatusState
 	setServerStatus = setServerStatusState
