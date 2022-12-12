@@ -1,14 +1,21 @@
-import { useState } from "react"
 import WebSocket from "react-native-websocket"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
-var serverStatus, setServerStatus, requestingHelp, 
-    setRequestingHelp, readyToHelp, setReadyToHelp,
-    ws
+var serverStatus,
+	setServerStatus,
+	requestingHelp,
+	setRequestingHelp,
+	readyToHelp,
+	setReadyToHelp,
+	deviceID, ws
 
 export const initWebSocket = (
-	serverStatusState, setServerStatusState, requestingHelpState,
-	setRequestingHelpState, readyToHelpState, setReadyToHelpState
+	serverStatusState,
+	setServerStatusState,
+	requestingHelpState,
+	setRequestingHelpState,
+	readyToHelpState,
+	setReadyToHelpState,
+    deviceIDState
 ) => {
 	serverStatus = serverStatusState
 	setServerStatus = setServerStatusState
@@ -16,13 +23,20 @@ export const initWebSocket = (
 	setRequestingHelp = setRequestingHelpState
 	readyToHelp = readyToHelpState
 	setReadyToHelp = setReadyToHelpState
+    deviceID = deviceIDState
+}
+
+export const serverStatuses = {
+    connectedToServer: "Connected to server",
+    notConnectedToServer: "Not connected to server",
+    connectingToServer: "Connecting to server"
 }
 
 export const connectServer = async () => {
-	const deviceID = await AsyncStorage.getItem("deviceID")
+    setServerStatus(connectingToServer)
 	ws = new WebSocket("ws://localhost:8080")
 	ws.onopen = () => {
-		setServerStatus("Connected to server")
+		setServerStatus(connectedToServer)
 		ws.send("registerUser", deviceID)
 	}
 	ws.onmessage = (e) => {
@@ -41,16 +55,19 @@ export const connectServer = async () => {
 		console.log("ws.onerror: ", err.message)
 	}
 	ws.onclose = (err) => {
-		setServerStatus("Not connected to server")
+		setServerStatus(notConnectedToServer)
 		console.log("ws.onclose: ", err.code, err.reason)
 	}
 }
+export const disconnectServer = () => {
+	ws.send("close", deviceID)
+}
 export const reconnectServer = () => {
-	ws.close()
+	disconnectServer()
 	connectServer()
 }
 
-export const requestHelp = () => {
+export const helpRequestFunction = () => {
 	if (requestingHelp) {
 		ws.send("cancelHelp", deviceID)
 	} else {
@@ -58,7 +75,7 @@ export const requestHelp = () => {
 	}
 	setRequestingHelp(!requestingHelp)
 }
-export const startHelping = () => {
+export const helpOfferFunction = () => {
 	if (readyToHelp) {
 		ws.send("stopHelping", deviceID)
 	} else {

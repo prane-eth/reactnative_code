@@ -11,21 +11,32 @@ wss.on("connection", function connection(ws) {
     const helperTasks = ["startHelping", "stopHelping"]
     const usersClients = []
     const helpersClients = []
+    const availableRequests = []
+    const availableOffers = []
+
     ws.on("registerUser", function incoming(message) {
         const deviceID = message.toString()
-        console.log(deviceID)
+        console.log("registerUser: ", deviceID)
+        helpersClients = helpersClients.filter((client) => client != deviceID)
         usersClients.push(deviceID)
     })
     ws.on("registerHelper", function incoming(message) {
         const deviceID = message.toString()
-        console.log(deviceID)
+        console.log("registerHelper: ", deviceID)
+        usersClients = usersClients.filter((client) => client != deviceID)
         helpersClients.push(deviceID)
     })
     ws.on("deregister", function incoming(message) {
         const deviceID = message.toString()
-        console.log(deviceID)
+        console.log("deregister: ", deviceID)
         usersClients = usersClients.filter((client) => client != deviceID)
         helpersClients = helpersClients.filter((client) => client != deviceID)
+    })
+    ws.on("close", function close(message) {
+        const deviceID = message.toString()
+        availableRequests = availableRequests.filter((request) => request != deviceID)
+        availableOffers = availableOffers.filter((offer) => offer != deviceID)
+        console.log("disconnected client: ", deviceID)
     })
     userTasks.forEach((task) => {
         ws.on(task, function incoming(message) {

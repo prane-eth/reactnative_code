@@ -9,69 +9,124 @@ import {
 } from "./CustomFunctions/DeviceFunctions"
 import {
 	connectServer,
-    reconnectServer,
-    initWebSocket,
+	reconnectServer,
+	disconnectServer,
+	initWebSocket,
+	helpRequestFunction,
+    helpOfferFunction,
+    serverStatuses
 } from "./CustomFunctions/MyWebsocket"
 
 export default function App() {
-    const [registrationStatus, setRegistrationStatus] = useState(null)
-    const [serverStatus, setServerStatus] = useState(false)
-    const [requestingHelp, setRequestingHelp] = useState(false)
+	const [registrationStatus, setRegistrationStatus] = useState(null)
+	const [serverStatus, setServerStatus] = useState("Not connected to server")
+	const [requestingHelp, setRequestingHelp] = useState(false)
     const [readyToHelp, setReadyToHelp] = useState(false)
-    initWebSocket(
-        serverStatus, setServerStatus, requestingHelp,
-        setRequestingHelp, readyToHelp, setReadyToHelp
-    )
+    const [deviceID, setDeviceID] = useState(null)
+    
+	// initialize by passing in state variables
+	initWebSocket(
+		serverStatus,
+		setServerStatus,
+		requestingHelp,
+		setRequestingHelp,
+		readyToHelp,
+        setReadyToHelp,
+        deviceID
+	)
 
 	useEffect(() => {
 		ensureDeviceID()
 		ensureLocationEnabled()
-        connectServer()
-        AsyncStorage.getItem("registrationStatus").then((value) => {
-            setRegistrationStatus(value)
-        })
+		connectServer()
+		AsyncStorage.getItem("registrationStatus").then((value) => {
+			setRegistrationStatus(value)
+		})
+		AsyncStorage.getItem("deviceID").then((value) => {
+			setDeviceID(value)
+		})
 		// on page close, close websocket
 		return () => {
-			ws.close()
+			disconnectServer()
 		}
-    }, [])
+	}, [])
 
-    // when registrationStatus changes, store it in AsyncStorage
-    useEffect(() => {
-        AsyncStorage.setItem("registrationStatus", registrationStatus)
+	// when registrationStatus changes, store it in AsyncStorage
+	useEffect(() => {
+		AsyncStorage.setItem("registrationStatus", registrationStatus)
     }, [registrationStatus])
+
+    if (serverStatus != serverStatuses.connectedToServer) {
+        return (
+            <View style={styles.container}>
+                <StatusBar style="auto" />
+                <Text onPress={reconnectServer}> {serverStatus} </Text>
+            </View>
+        )
+    }
+
+    if (!registrationStatus) {
+        return (
+            <View style={styles.container}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        setRegistrationStatus("user")
+                    }}
+                >
+                    <Text style={styles.buttonText}> Register as User </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        setRegistrationStatus("helper")
+                    }}
+                >
+                    <Text style={styles.buttonText}> Register as Helper </Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 	return registrationStatus ? (
 		<View style={styles.container}>
 			<StatusBar style="auto" />
-			{/* circle filled with color depending on server status */}
-			<div
-				style={serverStatus == "Connected to server" ? "green" : "red"}
-			></div>
-			<Text onPress={reconnectServer}> serverStatus </Text>
+            {
+                (serverStatus == "Connected to server") ?
+                    <View style={styles.greenCircle}></View>
+                :
+                    <View style={styles.redCircle}></View>
+            }
+			<Text onPress={reconnectServer}> {serverStatus} </Text>
 			{requestingHelp ? (
 				<TouchableOpacity
 					style={[styles.button, styles.redButton]}
-					onPress={requestHelp}
+					onPress={helpRequestFunction}
 				>
 					<Text style={styles.buttonText}> Cancel Help </Text>
 				</TouchableOpacity>
 			) : (
-				<TouchableOpacity style={styles.button} onPress={requestHelp}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={helpRequestFunction}
+				>
 					<Text style={styles.buttonText}> Request Help </Text>
 				</TouchableOpacity>
 			)}
-			{readyToHelp ? (
+			{/* {readyToHelp ? (
 				<TouchableOpacity
 					style={[styles.button, styles.redButton]}
-					onPress={startHelping}
+					onPress={helpOfferFunction}
 				>
 					<Text style={styles.buttonText}> Stop Helping </Text>
 				</TouchableOpacity>
 			) : (
-				<TouchableOpacity style={styles.button} onPress={startHelping}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={helpOfferFunction}
+				>
 					<Text style={styles.buttonText}> Start Helping </Text>
 				</TouchableOpacity>
-			)}
+			)} */}
 		</View>
 	) : (
 		<View style={styles.container}>
@@ -96,6 +151,8 @@ export default function App() {
 	)
 }
 
+const circleWidth = 12
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -113,15 +170,15 @@ const styles = StyleSheet.create({
 		backgroundColor: "red",
 	},
 	redCircle: {
-		width: 50,
-		height: 50,
-		borderRadius: 50,
+		width: circleWidth,
+		height: circleWidth,
+		borderRadius: "50%",
 		backgroundColor: "red",
 	},
 	greenCircle: {
-		width: 50,
-		height: 50,
-		borderRadius: 50,
+		width: circleWidth,
+		height: circleWidth,
+		borderRadius: "50%",
 		backgroundColor: "green",
 	},
 })
