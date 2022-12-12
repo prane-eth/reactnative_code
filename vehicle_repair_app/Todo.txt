@@ -1,0 +1,4 @@
+should select mode when opening app for first time
+if mode is stored and exists, open app in that mode
+
+add option to deregister device from server
