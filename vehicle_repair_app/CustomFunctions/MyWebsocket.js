@@ -12,8 +12,17 @@ export const connectServer = () => {
         setServerStatus("Connected to server");
         ws.send("Hello!");
     };
-    ws.onmessage = (err) => {
-        console.log("ws.onmessage: ", err.data);
+    ws.onmessage = (e) => {
+        console.log("ws.onmessage: ", e.data);
+        if (e.data == "startHelping") {
+            setReadyToHelp(true);
+        } else if (e.data == "stopHelping") {
+            setReadyToHelp(false);
+        } else if (e.data == "requestHelp") {
+            setRequestingHelp(true);
+        } else if (e.data == "cancelHelp") {
+            setRequestingHelp(false);
+        }
     };
     ws.onerror = (err) => {
         console.log("ws.onerror: ", err.message);

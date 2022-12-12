@@ -7,15 +7,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", function connection(ws) {
-    ws.on("message", function incoming(message, isBinary) {
-        console.log(message.toString(), isBinary);
-        wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message.toString());
-            }
-        });
-    });
-    // startHelping
+    // startHelping, stopHelping, requestHelp, cancelHelp
     ws.on("startHelping", function incoming(message, isBinary) {
         console.log(message.toString(), isBinary);
         wss.clients.forEach(function each(client) {
@@ -23,7 +15,31 @@ wss.on("connection", function connection(ws) {
                 client.send(message.toString());
             }
         });
-    }
+    });
+    ws.on("stopHelping", function incoming(message, isBinary) {
+        console.log(message.toString(), isBinary);
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
+    ws.on("requestHelp", function incoming(message, isBinary) {
+        console.log(message.toString(), isBinary);
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
+    ws.on("cancelHelp", function incoming(message, isBinary) {
+        console.log(message.toString(), isBinary);
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
 });
 
 // app.get("/", (req, res) => {

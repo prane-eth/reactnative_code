@@ -26,6 +26,10 @@ export default function App() {
         ensureDeviceID();
         ensureLocationEnabled();
         connectServer();
+        // on page close, close websocket
+        return () => {
+            ws.close();
+        }
     }, []);
     return (
         <View style={styles.container}>

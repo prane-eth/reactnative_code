@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "internet_test_app",
+    "slug": "internet_test_app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "internet_test_app"
+}
