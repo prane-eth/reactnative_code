@@ -1,85 +1,71 @@
-import WebSocket from "react-native-websocket"
-
-var serverStatus,
+import WebSocket from "react-native-websocket";
+import {
+	backendURL,
+	serverStatus,
 	setServerStatus,
 	requestingHelp,
 	setRequestingHelp,
 	readyToHelp,
 	setReadyToHelp,
-	deviceID, ws
+	deviceID,
+} from "./StateVariables";
 
-export const initWebSocket = (
-	serverStatusState,
-	setServerStatusState,
-	requestingHelpState,
-	setRequestingHelpState,
-	readyToHelpState,
-	setReadyToHelpState,
-    deviceIDState
-) => {
-	serverStatus = serverStatusState
-	setServerStatus = setServerStatusState
-	requestingHelp = requestingHelpState
-	setRequestingHelp = setRequestingHelpState
-	readyToHelp = readyToHelpState
-	setReadyToHelp = setReadyToHelpState
-    deviceID = deviceIDState
-}
+var ws;
 
-export const serverStatuses = {
-    connectedToServer: "Connected to server",
-    notConnectedToServer: "Not connected to server",
-    connectingToServer: "Connecting to server"
-}
+export const statusTypes = {
+	connectedToServer: "Connected to server",
+	notConnectedToServer: "Not connected to server",
+	connectingToServer: "Connecting to server",
+};
 
 export const connectServer = async () => {
-    setServerStatus(connectingToServer)
-	ws = new WebSocket("ws://localhost:8080")
+	setServerStatus(statusTypes.connectingToServer);
+	ws = new WebSocket(backendURL);
 	ws.onopen = () => {
-		setServerStatus(connectedToServer)
-		ws.send("registerUser", deviceID)
-	}
+		setServerStatus(statusTypes.connectedToServer);
+		ws.send("registerUser", deviceID);
+	};
 	ws.onmessage = (e) => {
-		console.log("ws.onmessage: ", e.data)
+		console.log("ws.onmessage: ", e.data);
 		if (e.data == "startHelping") {
-			setReadyToHelp(true)
+			setReadyToHelp(true);
 		} else if (e.data == "stopHelping") {
-			setReadyToHelp(false)
+			setReadyToHelp(false);
 		} else if (e.data == "requestHelp") {
-			setRequestingHelp(true)
+			setRequestingHelp(true);
 		} else if (e.data == "cancelHelp") {
-			setRequestingHelp(false)
+			setRequestingHelp(false);
 		}
-	}
+	};
 	ws.onerror = (err) => {
-		console.log("ws.onerror: ", err.message)
-	}
+		console.log("ws.onerror: ", err.message);
+	};
 	ws.onclose = (err) => {
-		setServerStatus(notConnectedToServer)
-		console.log("ws.onclose: ", err.code, err.reason)
-	}
-}
+		setServerStatus(statusTypes.notConnectedToServer);
+		console.log("ws.onclose: ", err.code, err.reason);
+	};
+};
 export const disconnectServer = () => {
-	ws.send("close", deviceID)
-}
+	ws.send("close", deviceID);
+};
 export const reconnectServer = () => {
-	disconnectServer()
-	connectServer()
-}
+	disconnectServer();
+	connectServer();
+};
 
 export const helpRequestFunction = () => {
 	if (requestingHelp) {
-		ws.send("cancelHelp", deviceID)
+		ws.send("cancelHelp", deviceID);
 	} else {
-		ws.send("requestHelp", deviceID)
+		ws.send("requestHelp", deviceID);
 	}
-	setRequestingHelp(!requestingHelp)
-}
+	setRequestingHelp(!requestingHelp);
+};
 export const helpOfferFunction = () => {
 	if (readyToHelp) {
-		ws.send("stopHelping", deviceID)
+		ws.send("stopHelping", deviceID);
 	} else {
-		ws.send("startHelping", deviceID)
+		ws.send("startHelping", deviceID);
 	}
-	setReadyToHelp(!readyToHelp)
-}
+	setReadyToHelp(!readyToHelp);
+};

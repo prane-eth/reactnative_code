@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar"
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
@@ -11,91 +11,74 @@ import {
 	connectServer,
 	reconnectServer,
 	disconnectServer,
-	initWebSocket,
 	helpRequestFunction,
-    helpOfferFunction,
-    serverStatuses
-} from "./CustomFunctions/MyWebsocket"
+	statusTypes,
+	serverStatus,
+	requestingHelp,
+	deviceID,
+} from "./CustomFunctions/MyWebsocket";
 
 export default function App() {
-	const [registrationStatus, setRegistrationStatus] = useState(null)
-	const [serverStatus, setServerStatus] = useState("Not connected to server")
-	const [requestingHelp, setRequestingHelp] = useState(false)
-    const [readyToHelp, setReadyToHelp] = useState(false)
-    const [deviceID, setDeviceID] = useState(null)
-    
-	// initialize by passing in state variables
-	initWebSocket(
-		serverStatus,
-		setServerStatus,
-		requestingHelp,
-		setRequestingHelp,
-		readyToHelp,
-        setReadyToHelp,
-        deviceID
-	)
-
 	useEffect(() => {
-		ensureDeviceID()
-		ensureLocationEnabled()
-		connectServer()
+		ensureDeviceID();
+		ensureLocationEnabled();
+		connectServer();
 		AsyncStorage.getItem("registrationStatus").then((value) => {
-			setRegistrationStatus(value)
-		})
+			setRegistrationStatus(value);
+		});
 		AsyncStorage.getItem("deviceID").then((value) => {
-			setDeviceID(value)
-		})
+			setDeviceID(value);
+		});
 		// on page close, close websocket
 		return () => {
-			disconnectServer()
-		}
-	}, [])
+			disconnectServer();
+		};
+	}, []);
 
 	// when registrationStatus changes, store it in AsyncStorage
 	useEffect(() => {
-		AsyncStorage.setItem("registrationStatus", registrationStatus)
-    }, [registrationStatus])
+		AsyncStorage.setItem("registrationStatus", registrationStatus);
+	}, [registrationStatus]);
 
-    if (serverStatus != serverStatuses.connectedToServer) {
-        return (
-            <View style={styles.container}>
-                <StatusBar style="auto" />
-                <Text onPress={reconnectServer}> {serverStatus} </Text>
-            </View>
-        )
-    }
+	if (serverStatus != statusTypes.connectedToServer) {
+		return (
+			<View style={styles.container}>
+				<StatusBar style="auto" />
+				<Text onPress={reconnectServer}> {serverStatus} </Text>
+			</View>
+		);
+	}
 
-    if (!registrationStatus) {
-        return (
-            <View style={styles.container}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        setRegistrationStatus("user")
-                    }}
-                >
-                    <Text style={styles.buttonText}> Register as User </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        setRegistrationStatus("helper")
-                    }}
-                >
-                    <Text style={styles.buttonText}> Register as Helper </Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+	if (!registrationStatus) {
+		return (
+			<View style={styles.container}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={() => {
+						setRegistrationStatus("user");
+					}}
+				>
+					<Text style={styles.buttonText}> Register as User </Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={() => {
+						setRegistrationStatus("helper");
+					}}
+				>
+					<Text style={styles.buttonText}> Register as Helper </Text>
+				</TouchableOpacity>
+			</View>
+		);
+	}
 	return registrationStatus ? (
 		<View style={styles.container}>
 			<StatusBar style="auto" />
-            {
-                (serverStatus == "Connected to server") ?
-                    <View style={styles.greenCircle}></View>
-                :
-                    <View style={styles.redCircle}></View>
-            }
+			{serverStatus == "Connected to server" ? (
+				<View style={styles.greenCircle}></View>
+			) : (
+				<View style={styles.redCircle}></View>
+			)}
 			<Text onPress={reconnectServer}> {serverStatus} </Text>
 			{requestingHelp ? (
 				<TouchableOpacity
@@ -134,7 +117,7 @@ export default function App() {
 			<TouchableOpacity
 				style={styles.button}
 				onPress={() => {
-					setRegistrationStatus("user")
+					setRegistrationStatus("user");
 				}}
 			>
 				<Text style={styles.buttonText}> Register as User </Text>
@@ -142,13 +125,13 @@ export default function App() {
 			<TouchableOpacity
 				style={styles.button}
 				onPress={() => {
-					setRegistrationStatus("helper")
+					setRegistrationStatus("helper");
 				}}
 			>
 				<Text style={styles.buttonText}> Register as Helper </Text>
 			</TouchableOpacity>
 		</View>
-	)
+	);
 }
 
 const circleWidth = 12
