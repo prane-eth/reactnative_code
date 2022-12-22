@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar"
 import React, { useEffect } from "react"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -15,7 +14,7 @@ import {
 	statusTypes,
 	serverStatus,
 	requestingHelp,
-	deviceID,
+	setDeviceID
 } from "./CustomFunctions/MyWebsocket";
 
 export default function App() {
@@ -43,7 +42,6 @@ export default function App() {
 	if (serverStatus != statusTypes.connectedToServer) {
 		return (
 			<View style={styles.container}>
-				<StatusBar style="auto" />
 				<Text onPress={reconnectServer}> {serverStatus} </Text>
 			</View>
 		);
@@ -73,7 +71,6 @@ export default function App() {
 	}
 	return registrationStatus ? (
 		<View style={styles.container}>
-			<StatusBar style="auto" />
 			{serverStatus == "Connected to server" ? (
 				<View style={styles.greenCircle}></View>
 			) : (

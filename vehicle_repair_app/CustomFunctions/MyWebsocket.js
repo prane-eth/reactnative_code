@@ -1,13 +1,14 @@
 import WebSocket from "react-native-websocket";
 import {
 	backendURL,
-	serverStatus,
 	setServerStatus,
+	serverStatus,
 	requestingHelp,
 	setRequestingHelp,
 	readyToHelp,
 	setReadyToHelp,
 	deviceID,
+	setDeviceID
 } from "./StateVariables";
 
 var ws;
@@ -69,3 +70,17 @@ export const helpOfferFunction = () => {
 	}
 	setReadyToHelp(!readyToHelp);
 };
+
+
+// export other variables from StateVariables.js
+export {
+	backendURL,
+	setServerStatus,
+	requestingHelp,
+	setRequestingHelp,
+	readyToHelp,
+	setReadyToHelp,
+	deviceID,
+	setDeviceID,
+	serverStatus,
+}
